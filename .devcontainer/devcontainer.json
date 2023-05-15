@@ -12,9 +12,7 @@
 			"moby": true
 		}
 	},
-	"runArgs": [
-		"--network=host"
-	]
+	"forwardPorts": [5432]
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

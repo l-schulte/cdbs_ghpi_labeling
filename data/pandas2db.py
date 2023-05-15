@@ -3,7 +3,7 @@ import sqlalchemy
 from sqlalchemy import text, types
 
 engine = sqlalchemy.create_engine(
-    "postgresql+pg8000://postgres:example@localhost/github", echo=False
+    "postgresql+pg8000://postgres:postgres@db/postgres", echo=False
 )
 
 issues_df: pd.DataFrame = pd.read_pickle("issues.p")
