@@ -2,13 +2,16 @@
 	import '@picocss/pico';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
-	import { invalidate } from '$app/navigation';
+	import { getCookie } from 'typescript-cookie';
 
 	export let data: PageData;
+	let userToken = getCookie('userToken');
+
+	let numHarmonizedLabels = 1;
 
 	onMount(() => {
 		window.open(
-			`https://github.com/freeplane/freeplane/issues/${data.issue.id}`,
+			`https://github.com/${data.issue.project}/issues/${data.issue.number}`,
 			'github',
 			'popup=true,resize=true,width=600,height=400,left=200,top=200'
 		);
@@ -23,6 +26,8 @@
 		window.location.href = '/work';
 	}
 </script>
+
+<!-- BODY -->
 
 <nav>
 	<ul>
@@ -44,12 +49,21 @@
 			</div>
 
 			<div class="category split">
-				<p>
-					Labels:
-					{#each data.issue.labels as label}
-						<kbd>{label}</kbd>
-					{/each}
-				</p>
+				{#if data.issue.harmonizedLabels}
+					<p>
+						Harmonized labels:
+						{#each data.issue.labels as label}
+							<kbd>{label}</kbd>
+						{/each}
+					</p>
+				{:else}
+					<p>
+						Labels:
+						{#each data.issue.labels as label}
+							<kbd>{label}</kbd>
+						{/each}
+					</p>
+				{/if}
 
 				<p>Status: <kbd>{data.issue.status}</kbd></p>
 			</div>
@@ -59,7 +73,7 @@
 				<table role="grid">
 					<thead>
 						<tr>
-							<th scope="col">Author</th>
+							<th scope="col">Reporter</th>
 							<th scope="col">Username</th>
 							<th scope="col">Commits</th>
 							<th scope="col">Issues reported</th>
@@ -68,7 +82,7 @@
 					<tbody>
 						{#each data.issue.participants as participant}
 							<tr>
-								<td>{participant.author ? '✅' : '❌'}</td>
+								<td>{participant.reporter ? '✅' : '❌'}</td>
 								<td>{participant.login}</td>
 								<td>{participant.commits}</td>
 								<td>{participant.reports}</td>
@@ -84,26 +98,49 @@
 			</div>
 		</article>
 
-		<article>
-			<header>Manual coding</header>
-			<form method="post">
-				<label for="privacyIssue">
-					Privacy issue
-					<input type="text" id="privacyIssue" name="privacyIssue" required />
-				</label>
+		{#if data.issue.isPrivacyRelated == null}
+			<article>
+				<header>Manual harmonization</header>
+				<form method="post" action="?/harmonize">
+					<label for="harmonizedLabels">
+						Harmonized labels
+						{#each [...Array(numHarmonizedLabels).keys()] as cnt}
+							<input type="text" id="harmonizedLabels_{cnt}" name="harmonizedLabels" />
+						{/each}
+						<button type="button" class="secondary outline" on:click={() => numHarmonizedLabels++}>
+							+
+						</button>
+					</label>
 
-				<label for="consentInteraction">
-					Consent interaction
-					<input type="text" id="consentInteraction" name="consentInteraction" required />
-				</label>
+					<label class="checkboxLabel" for="isPrivacyRelated">
+						<input type="checkbox" id="isPrivacyRelated" name="isPrivacyRelated" checked />
+						Is privacy related
+					</label>
+					<button>Submit</button>
+				</form>
+			</article>
+		{:else}
+			<article>
+				<header>Manual coding</header>
+				<form method="post" action="coding">
+					<label for="privacyIssue">
+						Privacy issue
+						<input type="text" id="privacyIssue" name="privacyIssue" required />
+					</label>
 
-				<label for="resolution">
-					Resolution
-					<input type="text" id="resolution" name="resolution" required />
-				</label>
-				<button>Submit</button>
-			</form>
-		</article>
+					<label for="consentInteraction">
+						Consent interaction
+						<input type="text" id="consentInteraction" name="consentInteraction" required />
+					</label>
+
+					<label for="resolution">
+						Resolution
+						<input type="text" id="resolution" name="resolution" required />
+					</label>
+					<button>Submit</button>
+				</form>
+			</article>
+		{/if}
 	</div>
 {:else}
 	<div class="content loading">
@@ -114,6 +151,8 @@
 <div class="navigation-wrapper">
 	<button class="secondary" on:click={nextIssue}>Skip</button>
 </div>
+
+<!-- STYLE -->
 
 <style lang="scss">
 	:global(body) {
@@ -134,12 +173,12 @@
 		width: 100%;
 		background-color: var(--background-color);
 
-		button {
-			margin-bottom: 5px;
-			height: 40px;
-			line-height: 40px;
-			padding: 0;
-		}
+		// button {
+		// 	margin-bottom: 5px;
+		// 	height: 40px;
+		// 	line-height: 40px;
+		// 	padding: 0;
+		// }
 	}
 
 	.content {
@@ -155,6 +194,14 @@
 			header {
 				margin-bottom: 10px;
 			}
+
+			.checkboxLabel {
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+				align-items: flex-end;
+				margin-bottom: 25px;
+			}
 		}
 
 		.category {
@@ -165,6 +212,7 @@
 
 			kbd {
 				margin-left: 5px;
+				margin-bottom: 5px;
 			}
 
 			&.split {

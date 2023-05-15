@@ -6,8 +6,15 @@
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"features": {
-		"ghcr.io/devcontainers/features/python:1": {}
-	}
+		"ghcr.io/devcontainers/features/python:1": {},
+		"ghcr.io/devcontainers/features/docker-in-docker:1": {
+			"version": "latest",
+			"moby": true
+		}
+	},
+	"runArgs": [
+		"--network=host"
+	]
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
