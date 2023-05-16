@@ -4,16 +4,16 @@
 	export let options: string[];
 
 	function getMatch(searchString: string, list: string[]): string {
-		const regex = new RegExp(searchString.split('').join('.*?'), 'i');
+		const regex = new RegExp(searchString.toLowerCase().split('').join('.*?'), 'i');
 		return list.find((str) => regex.test(str)) ?? 'other';
 	}
 
 	function handleKeyPress(event: KeyboardEvent) {
 		if (event.key == 'Tab') {
-			const match = getMatch(value, options);
+			const match = getMatch(value.length ? value : formName, options);
 			if (value != match) {
 				event.preventDefault();
-				value = getMatch(value, options);
+				value = match;
 			}
 		}
 	}
@@ -27,7 +27,7 @@
 		bind:value
 		on:keydown={handleKeyPress}
 	/>
-	<div class="typeahead">{getMatch(value, options)} (TAB)</div>
+	<div class="typeahead">{getMatch(value.length ? value : formName, options)} (TAB)</div>
 </div>
 
 <style lang="scss">

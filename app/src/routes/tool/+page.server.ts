@@ -1,6 +1,6 @@
 import { error, fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
-import { Client } from 'ts-postgres';
+import { Client, Query } from 'ts-postgres';
 
 
 const client = new Client({ host: 'db', port: 5432, user: 'postgres', password: 'postgres', database: 'postgres' });
@@ -20,11 +20,17 @@ export const load = (async (event) => {
 
     const result_issue = await client.query('SELECT * FROM gh_issues ORDER BY random() LIMIT 1').one()
 
-    const labels = result_issue.get('labels')
-    const resultLabelMap = await client.query('SELECT * FROM gh_label_map WHERE original_label IN ($1)', [labels.map((label: string) => label.toLowerCase()).join(', ')])
+    const labels: string[] = result_issue.get('labels')
     const labelMap: { [key: string]: string } = {}
-    for (const row of resultLabelMap) {
-        labelMap[row.get('original_label')] = row.get('harmonized_label')
+
+    if (labels.length) {
+        const q = new Query('SELECT * FROM gh_label_map WHERE original_label IN (' + labels.map((label, index) => `$${index + 1}`).join(', ') + ')',
+            [...labels.map((label: string) => label.toLowerCase())])
+
+        const resultLabelMap = await client.execute(q)
+        for (const row of resultLabelMap) {
+            labelMap[row.get('original_label')] = row.get('harmonized_label')
+        }
     }
 
     const resultAllLabels = await client.query('SELECT DISTINCT harmonized_label FROM gh_label_map')
