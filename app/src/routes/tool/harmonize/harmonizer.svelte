@@ -1,8 +1,8 @@
 <script lang="ts">
 	import '@picocss/pico';
-	import type { PageData } from '../tool/$types';
 	import { onMount } from 'svelte';
-	import Autocomplete from './autocomplete.svelte';
+	import Autocomplete from '../../shared/autocomplete.svelte';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
 
@@ -16,7 +16,7 @@
 
 <article>
 	<header>Manual harmonization</header>
-	<form method="post" action="?/harmonize">
+	<form method="post">
 		<input type="hidden" id="index" name="index" value={data.issue.index} />
 		{#if nonHarmonizedLabels.length}
 			<label for="harmonizedLabels">

@@ -1,16 +1,16 @@
-import { error, fail, redirect } from "@sveltejs/kit";
-import type { Actions, PageServerLoad } from "./$types";
+import { fail } from "@sveltejs/kit";
 import { Client, Query } from 'ts-postgres';
+import type { Actions, PageServerLoad } from "./$types";
+import { resultToIssue } from "../../shared/issue";
 
 
 const client = new Client({ host: 'db', port: 5432, user: 'postgres', password: 'postgres', database: 'postgres' });
 await client.connect();
 
-
-
 export const load = (async (event) => {
 
-    console.log("GET", event.cookies.getAll());
+    console.log("GET", event.cookies.getAll(), event.route);
+
 
     const userToken = event.cookies.get('userToken')
     const user = await checkUserToken(userToken)
@@ -18,7 +18,7 @@ export const load = (async (event) => {
         throw Error("Unauthorized")
     }
 
-    const result_issue = await client.query('SELECT * FROM gh_issues ORDER BY random() LIMIT 1').one()
+    const result_issue = await client.query('SELECT * FROM gh_issues WHERE status = $1 AND is_privacy_related IS NULL ORDER BY random() LIMIT 1', ['closed']).one()
 
     const labels: string[] = result_issue.get('labels')
     const labelMap: { [key: string]: string } = {}
@@ -39,36 +39,7 @@ export const load = (async (event) => {
         allHarmonizedLabels.push(row.get('harmonized_label'))
     }
 
-    const issue = {
-        index: result_issue.get('index'),
-        number: result_issue.get('issue_number'),
-        project: result_issue.get('project'),
-        reported: result_issue.get('reported_date'),
-        lastActive: result_issue.get('last_active_date'),
-        labels: result_issue.get('labels'),
-        status: result_issue.get('status'),
-        participants: [
-            {
-                reporter: true,
-                login: result_issue.get('reporter'),
-                commits: Math.floor(Math.random() * 100),
-                reports: Math.floor(Math.random() * 100)
-            },
-            ...(result_issue.get('discussants')).filter((login: string) => login != result_issue.get('reporter')).map((login: string) => {
-                return ({
-                    reporter: false,
-                    login: login,
-                    commits: Math.floor(Math.random() * 100),
-                    reports: Math.floor(Math.random() * 100)
-                })
-            })
-
-        ],
-        comments: result_issue.get('#comments'),
-        discussants: result_issue.get('#discussants'),
-        labelMap: labelMap,
-        isPrivacyRelated: result_issue.get('is_privacy_related')
-    }
+    const issue = resultToIssue(result_issue, labelMap)
 
     return {
         issue,
@@ -87,19 +58,7 @@ async function checkUserToken(token: string | undefined) {
 }
 
 export const actions = {
-    coding: async (event) => {
-        const userToken = event.cookies.get('userToken')
-        if (await checkUserToken(userToken) == null) {
-            return fail(403, { userToken, incorrect: true })
-        }
-
-        const data = await event.request.formData()
-        const cookies = event.cookies.getAll()
-        console.log('Coding', data);
-
-        // throw error(418, { message: "Server Error" })
-    },
-    harmonize: async (event) => {
+    default: async (event) => {
         const userToken = event.cookies.get('userToken')
         if (await checkUserToken(userToken) == null) {
             return fail(401, { userToken, incorrect: true })

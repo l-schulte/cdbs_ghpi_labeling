@@ -1,14 +1,17 @@
 <script lang="ts">
 	import '@picocss/pico';
-	import type { PageData } from '../tool/$types';
+	import type { PageData as PDLabel } from '../tool/label/$types';
+	import type { PageData as PDHarmonize } from '../tool/harmonize/$types';
 	import { onMount } from 'svelte';
 
-	export let data: PageData;
+	export let data: PDLabel | PDHarmonize;
 
 	let harmonizedLabels: string[] = [];
 
 	onMount(() => {
-		harmonizedLabels = data.issue.labels.filter((label: string) => data.issue.labelMap[label]);
+		harmonizedLabels = data.issue.labels
+			.filter((label: string) => data.issue.labelMap[label])
+			.map((label: string) => data.issue.labelMap[label]);
 	});
 </script>
 

@@ -1,13 +1,13 @@
 <script lang="ts">
 	import '@picocss/pico';
-	import type { PageData } from '../tool/$types';
+	import type { PageData } from '../$types';
 
 	export let data: PageData;
 </script>
 
 <article>
 	<header>Manual coding</header>
-	<form method="post" action="coding">
+	<form method="post">
 		<label for="privacyIssue">
 			Privacy issue
 			<input type="text" id="privacyIssue" name="privacyIssue" required />
