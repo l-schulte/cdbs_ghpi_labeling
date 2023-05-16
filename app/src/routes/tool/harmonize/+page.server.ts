@@ -2,9 +2,10 @@ import { fail } from "@sveltejs/kit";
 import { Client, Query } from 'ts-postgres';
 import type { Actions, PageServerLoad } from "./$types";
 import { resultToIssue } from "../../shared/issue";
+import { dbConfig } from "../variables";
 
 
-const client = new Client({ host: 'db', port: 5432, user: 'postgres', password: 'postgres', database: 'postgres' });
+const client = new Client(dbConfig);
 await client.connect();
 
 export const load = (async (event) => {

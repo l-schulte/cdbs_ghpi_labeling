@@ -1,10 +1,17 @@
 import pandas as pd
 import sqlalchemy
 from sqlalchemy import text, types
+import uuid
 
 engine = sqlalchemy.create_engine(
     "postgresql+pg8000://postgres:postgres@db/postgres", echo=False
 )
+
+gh_label_map = pd.DataFrame({'original_label': [], 'harmonized_label': []})
+gh_label_map.to_sql("gh_label_map", con=engine)
+
+users = pd.DataFrame({'token': [str(uuid.uuid4()), str(uuid.uuid4())], 'name': ['Lukas', 'Anne'] })
+users.to_sql("users", con=engine)
 
 issues_df: pd.DataFrame = pd.read_pickle("issues.p")
 # contributors_df = pd.read_pickle('contributors.p')
@@ -43,6 +50,8 @@ issues_df.to_sql(
         "harmonized_labels": types.JSON,
         "keywords": types.JSON,
     },
+    method="multi",
+    chunksize=1000
 )
 
 
