@@ -27,7 +27,7 @@
 			'github',
 			'popup=true,resize=true,width=600,height=400,left=200,top=200'
 		);
-		window.location.href = '/tool';
+		window.location.href = '/tool/label';
 	}
 </script>
 
