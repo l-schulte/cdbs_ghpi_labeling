@@ -1,7 +1,7 @@
 import { fail } from "@sveltejs/kit";
 import { Client, Query } from 'ts-postgres';
 import type { Actions, PageServerLoad } from "./$types";
-import { resultToIssue } from "../../shared/issue";
+import { getIssue } from "../../shared/issue";
 import { dbConfig } from "../variables";
 
 
@@ -40,7 +40,7 @@ export const load = (async (event) => {
         allHarmonizedLabels.push(row.get('harmonized_label'))
     }
 
-    const issue = resultToIssue(result_issue, labelMap)
+    const issue = getIssue(client, result_issue, labelMap)
 
     return {
         issue,

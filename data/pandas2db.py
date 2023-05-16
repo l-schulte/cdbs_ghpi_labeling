@@ -14,7 +14,6 @@ users = pd.DataFrame({'token': [str(uuid.uuid4()), str(uuid.uuid4())], 'name': [
 users.to_sql("users", con=engine)
 
 issues_df: pd.DataFrame = pd.read_pickle("issues.p")
-# contributors_df = pd.read_pickle('contributors.p')
 
 issues_df["issue_number"] = issues_df["issue"].apply(lambda x: x["number"])
 
@@ -53,6 +52,10 @@ issues_df.to_sql(
     method="multi",
     chunksize=1000
 )
+
+
+participants_df: pd.DataFrame = pd.read_pickle('participants.p')
+participants_df.to_sql('gh_participants', con=engine, method='multi', chunksize=1000)
 
 
 with engine.connect() as conn:
