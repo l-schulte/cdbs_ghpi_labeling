@@ -2,6 +2,7 @@
 	import '@picocss/pico';
 	import type { PageData } from '../tool/$types';
 	import { onMount } from 'svelte';
+	import Autocomplete from './autocomplete.svelte';
 
 	export let data: PageData;
 
@@ -22,12 +23,7 @@
 				{#each nonHarmonizedLabels as label}
 					<div class="label-mapper">
 						<div class="label-wrapper"><kbd>{label}</kbd></div>
-						<input
-							type="text"
-							id="harmonizedLabels_{label}"
-							name={label}
-							autocomplete="address-level4"
-						/>
+						<Autocomplete formName={label} value="" options={data.allHarmonizedLabels} />
 					</div>
 				{/each}
 			</label>
@@ -54,6 +50,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: baseline;
+			margin-bottom: 15px;
 
 			.label-wrapper {
 				height: 100%;

@@ -27,11 +27,11 @@ export const load = (async (event) => {
         labelMap[row.get('original_label')] = row.get('harmonized_label')
     }
 
-    // const resultAllLabels = await client.query('SELECT DISTINCT harmonized_label FROM gh_label_map')
-    // const allHarmonizedLabels: string[] = []
-    // for (const row of resultAllLabels) {
-    //     allHarmonizedLabels.push(row.get('harmonized_label'))
-    // }
+    const resultAllLabels = await client.query('SELECT DISTINCT harmonized_label FROM gh_label_map')
+    const allHarmonizedLabels: string[] = []
+    for (const row of resultAllLabels) {
+        allHarmonizedLabels.push(row.get('harmonized_label'))
+    }
 
     const issue = {
         index: result_issue.get('index'),
@@ -67,7 +67,7 @@ export const load = (async (event) => {
     return {
         issue,
         user,
-        // allHarmonizedLabels
+        allHarmonizedLabels
     }
 }) satisfies PageServerLoad
 
