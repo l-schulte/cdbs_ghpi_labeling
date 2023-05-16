@@ -77,7 +77,9 @@ export const actions = {
         await client.query('UPDATE gh_issues SET is_privacy_related = $1 WHERE index = $2', [isPrivacyRelated, index])
 
         for (const [originalLabel, harmonizedLabel] of data.entries()) {
-            await client.query('INSERT INTO gh_label_map (original_label, harmonized_label) VALUES ($1, $2)', [originalLabel.toLowerCase(), harmonizedLabel.toString().toLowerCase()])
+            if (harmonizedLabel.toString().length) {
+                await client.query('INSERT INTO gh_label_map (original_label, harmonized_label) VALUES ($1, $2)', [originalLabel.toLowerCase(), harmonizedLabel.toString().toLowerCase()])
+            }
         }
 
         // throw error(418, { message: "Server Error" })

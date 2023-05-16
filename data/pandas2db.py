@@ -4,22 +4,26 @@ from sqlalchemy import text, types
 import uuid
 
 engine = sqlalchemy.create_engine(
-    "postgresql+pg8000://postgres:postgres@db/postgres", echo=False
+    "", echo=False
 )
 
 gh_label_map = pd.DataFrame({'original_label': [], 'harmonized_label': []})
-gh_label_map.to_sql("gh_label_map", con=engine)
+gh_label_map.to_sql("gh_label_map", con=engine, dtype={'original_label': types.TEXT, 'harmonized_label': types.TEXT})
 
 users = pd.DataFrame({'token': [str(uuid.uuid4()), str(uuid.uuid4())], 'name': ['Lukas', 'Anne'] })
 users.to_sql("users", con=engine)
+
+participants_df: pd.DataFrame = pd.read_pickle('participants.p')
+participants_df.to_sql('gh_participants', con=engine, method='multi', chunksize=1000)
 
 issues_df: pd.DataFrame = pd.read_pickle("issues.p")
 
 issues_df["issue_number"] = issues_df["issue"].apply(lambda x: x["number"])
 
 # Remove JSON Objects
-issues_df["issue"] = None
-issues_df["comments"] = None
+issues_df = issues_df.drop(["issue", "comments", "index"], axis=1)
+issues_df = issues_df.reindex()
+
 
 # Add empty column for harmonized labels
 issues_df["harmonized_labels"] = None
@@ -53,9 +57,6 @@ issues_df.to_sql(
     chunksize=1000
 )
 
-
-participants_df: pd.DataFrame = pd.read_pickle('participants.p')
-participants_df.to_sql('gh_participants', con=engine, method='multi', chunksize=1000)
 
 
 with engine.connect() as conn:
