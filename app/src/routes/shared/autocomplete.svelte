@@ -29,8 +29,34 @@
 	/>
 	<div class="typeahead">{getMatch(value.length ? value : formName, options)} (TAB)</div>
 </div>
+<details class="dropdown" role="list" dir="rtl">
+	<summary aria-haspopup="listbox" role="link" />
+	<ul class="dropdown-popup" role="listbox">
+		{#each options as option}
+			<li>
+				<a
+					on:click={() => {
+						value = option;
+					}}
+				>
+					{option}
+				</a>
+			</li>
+		{/each}
+	</ul>
+</details>
 
 <style lang="scss">
+	.dropdown {
+		align-self: center;
+		margin: 5px;
+
+		.dropdown-popup {
+			min-width: 300px;
+			max-height: 300px;
+			overflow-y: scroll;
+		}
+	}
 	.input-wrapper {
 		display: flex;
 		align-items: center;
