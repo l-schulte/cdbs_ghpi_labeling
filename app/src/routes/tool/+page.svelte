@@ -19,13 +19,17 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td>Verified issues related to privacy</td>
-				<td>{data.numberOfPricacyIssues}</td>
+				<td>Issues related to privacy (verified so far)</td>
+				<td>{data.numberOfPrivacyIssues} / {data.numberOfIssues}</td>
+			</tr>
+			<tr>
+				<td>Issues not related to privacy (verified so far)</td>
+				<td>{data.numberOfNonPrivacyIssues} / {data.numberOfIssues}</td>
 			</tr>
 			{#each data.userProgress as progress}
 				<tr>
 					<td>Issues coded ({progress[0]})</td>
-					<td>{progress[1]} / {data.numberOfIssues}</td>
+					<td>{progress[1]} / {data.numberOfPrivacyIssues}</td>
 				</tr>
 			{/each}
 		</tbody>

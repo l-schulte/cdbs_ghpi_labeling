@@ -14,6 +14,7 @@ export const load = (async (event) => {
    
 
     const resultIssuesRelatedToPrivacy = await client.query('SELECT COUNT(*) FROM gh_issues WHERE is_privacy_related = $1', [true]).one()
+    const resultIssuesNotRelatedToPrivacy = await client.query('SELECT COUNT(*) FROM gh_issues WHERE is_privacy_related = $1', [false]).one()
 
     const resultUsers = await client.query('SELECT index, name FROM users')
     const userProgress: [string, string][] = []
@@ -30,7 +31,8 @@ export const load = (async (event) => {
     const resultNumberOfIssues = await client.query('SELECT COUNT(*) FROM gh_issues').one()
 
     return {
-        numberOfPricacyIssues: resultIssuesRelatedToPrivacy.get('count'),
+        numberOfPrivacyIssues: resultIssuesRelatedToPrivacy.get('count'),
+        numberOfNonPrivacyIssues: resultIssuesNotRelatedToPrivacy.get('count'),
         userProgress,
         numberOfIssues: resultNumberOfIssues.get('count')
     }
