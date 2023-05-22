@@ -35,7 +35,7 @@
 		</tbody>
 	</table>
 
-	<a href="/tool/label" role="button">Labeling</a>
+	<a href="/tool/label" role="button">Coding</a>
 	<a href="/tool/harmonize" role="button">Validating</a>
 </div>
 
