@@ -21,12 +21,11 @@ export const load = (async (event) => {
 
     const result_issue = await client.query('SELECT * FROM gh_issues WHERE status = $1 AND is_privacy_related IS NULL ORDER BY random() LIMIT 1', ['closed']).one()
 
-    const labels: string[] = result_issue.get('labels')
+    const labels: string[] = result_issue.get('labels').map((label: string) => label.toLowerCase())
     const labelMap: { [key: string]: string } = {}
 
     if (labels.length) {
-        const q = new Query('SELECT * FROM gh_label_map WHERE original_label IN (' + labels.map((label, index) => `$${index + 1}`).join(', ') + ')',
-            [...labels.map((label: string) => label.toLowerCase())])
+        const q = new Query('SELECT * FROM gh_label_map WHERE original_label IN (' + labels.map((label, index) => `$${index + 1}`).join(', ') + ')', [...labels])
 
         const resultLabelMap = await client.execute(q)
         for (const row of resultLabelMap) {

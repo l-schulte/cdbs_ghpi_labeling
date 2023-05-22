@@ -27,7 +27,7 @@ export async function getIssue(client: Client, result_issue: ResultRow, labelMap
         project: project,
         reported: result_issue.get('reporting_date'),
         lastActive: result_issue.get('last_active_date'),
-        labels: result_issue.get('labels'),
+        labels: result_issue.get('labels').map((label: string) => label.toLowerCase()),
         status: result_issue.get('status'),
         participants: participants,
         comments: result_issue.get('#comments'),
