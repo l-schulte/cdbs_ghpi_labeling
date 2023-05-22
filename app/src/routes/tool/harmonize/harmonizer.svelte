@@ -9,8 +9,9 @@
 	let nonHarmonizedLabels: string[] = [];
 
 	onMount(() => {
-		nonHarmonizedLabels = data.issue.labels.filter((label: string) => !data.issue.labelMap[label]);
-		console.log({ nonHarmonizedLabels, labels: data.issue.labels, labelMap: data.issue.labelMap });
+		nonHarmonizedLabels = data.issue.labels.filter(
+			(label: string) => !data.issue.labelMap[label.toLowerCase()]
+		);
 	});
 </script>
 
