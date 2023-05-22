@@ -6,7 +6,7 @@
 
 <div class="wrapper">
 	<a href="/tool/label" role="button">Labeling</a>
-	<a href="/tool/harmonize" role="button">Harmonizing</a>
+	<a href="/tool/harmonize" role="button">Validating</a>
 </div>
 
 <!-- STYLE -->
