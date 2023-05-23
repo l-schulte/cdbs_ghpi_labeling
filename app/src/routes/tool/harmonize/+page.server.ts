@@ -2,7 +2,7 @@ import { fail } from "@sveltejs/kit";
 import { Client, Query } from 'ts-postgres';
 import type { Actions, PageServerLoad } from "./$types";
 import { getIssue } from "../../shared/issue";
-import { dbConfig } from "../variables";
+import { checkUserToken, dbConfig } from "../variables";
 
 
 const client = new Client(dbConfig);
@@ -14,7 +14,7 @@ export const load = (async (event) => {
 
 
     const userToken = event.cookies.get('userToken')
-    const user = await checkUserToken(userToken)
+    const user = await checkUserToken(userToken, client)
     if (user == null) {
         throw Error("Unauthorized")
     }
@@ -48,19 +48,10 @@ export const load = (async (event) => {
     }
 }) satisfies PageServerLoad
 
-async function checkUserToken(token: string | undefined) {
-    if (!token) {
-        return null
-    }
-
-    const result = await client.query('SELECT * FROM users WHERE token = $1', [token]).one()
-    return result?.get('name') ?? null
-}
-
 export const actions = {
     default: async (event) => {
         const userToken = event.cookies.get('userToken')
-        if (await checkUserToken(userToken) == null) {
+        if (await checkUserToken(userToken, client) == null) {
             return fail(401, { userToken, incorrect: true })
         }
 
