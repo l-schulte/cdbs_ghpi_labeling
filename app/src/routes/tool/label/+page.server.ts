@@ -63,14 +63,29 @@ async function checkUserToken(token: string | undefined): Promise<[string, numbe
 export const actions = {
     default: async (event) => {
         const userToken = event.cookies.get('userToken')
-        if (await checkUserToken(userToken) == null) {
+        const tokenCheck = await checkUserToken(userToken)
+        if (tokenCheck == null) {
             return fail(403, { userToken, incorrect: true })
         }
 
-        const data = await event.request.formData()
-        const cookies = event.cookies.getAll()
-        console.log('Coding', data);
+        const [username, userId] = tokenCheck
 
-        // throw error(418, { message: "Server Error" })
+        const data = await event.request.formData()
+        console.log('label', data);
+
+        const index = data.get('index')
+        data.delete('index')
+
+        const isPrivacyRelated = data.has('isPrivacyRelated')
+        data.delete('isPrivacyRelated')
+
+        if (!isPrivacyRelated) {
+            await client.query('UPDATE gh_issues SET is_privacy_related = $1 WHERE index = $2', [isPrivacyRelated, index])
+        } else {
+            await client.query(
+                `UPDATE gh_issues SET privacy_issue_rater_${userId + 1} = $1, consent_interaction_rater_${userId + 1} = $2, resolution_rater_${userId + 1} = $3 WHERE index = $4`,
+                [index, [data.get('privacyIssue'), data.get('consentInteraction'), data.get('resolution')].map(value => value?.toString().toLowerCase())]
+            )
+        }
     }
 } satisfies Actions

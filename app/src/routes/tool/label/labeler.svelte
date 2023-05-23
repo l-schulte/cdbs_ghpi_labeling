@@ -4,14 +4,23 @@
 	import Autocomplete from '../../shared/autocomplete.svelte';
 
 	export let data: PageData;
+
+	let isPrivacyRelated = data.issue.isPrivacyRelated;
 </script>
 
 <article>
 	<header>Manual coding</header>
 	<form method="post">
+		<input type="hidden" id="index" name="index" value={data.issue.index} />
+
 		<label for="privacyIssue">
 			Privacy issue
-			<Autocomplete formName="privacyIssue" value="" options={data.privacyIssueOptions} />
+			<Autocomplete
+				formName="privacyIssue"
+				value=""
+				options={data.privacyIssueOptions}
+				required={isPrivacyRelated}
+			/>
 		</label>
 
 		<label for="consentInteraction">
@@ -20,12 +29,28 @@
 				formName="consentInteraction"
 				value=""
 				options={data.consentInteractionOptions}
+				required={isPrivacyRelated}
 			/>
 		</label>
 
 		<label for="resolution">
 			Resolution
-			<Autocomplete formName="resolution" value="" options={data.resolutionOptions} />
+			<Autocomplete
+				formName="resolution"
+				value=""
+				options={data.resolutionOptions}
+				required={isPrivacyRelated}
+			/>
+		</label>
+
+		<label class="checkboxLabel" for="isPrivacyRelated">
+			<input
+				type="checkbox"
+				id="isPrivacyRelated"
+				name="isPrivacyRelated"
+				bind:checked={isPrivacyRelated}
+			/>
+			Is privacy related (only change if wrongly classified)
 		</label>
 		<button type="submit">Submit</button>
 	</form>
@@ -54,5 +79,13 @@
 				width: 100%;
 			}
 		}
+	}
+
+	.checkboxLabel {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: flex-end;
+		margin-bottom: 25px;
 	}
 </style>

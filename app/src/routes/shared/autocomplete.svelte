@@ -2,6 +2,7 @@
 	export let formName: string;
 	export let value: string;
 	export let options: string[];
+	export let required: boolean = false;
 
 	function getMatch(searchString: string, list: string[]): string {
 		const regex = new RegExp(searchString.toLowerCase().split('').join('.*?'), 'i');
@@ -27,6 +28,7 @@
 			name={formName}
 			bind:value
 			on:keydown={handleKeyPress}
+			{required}
 		/>
 		<div class="typeahead">{getMatch(value.length ? value : formName, options)} (TAB)</div>
 	</div>

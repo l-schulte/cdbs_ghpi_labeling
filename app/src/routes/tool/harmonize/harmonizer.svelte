@@ -6,6 +6,9 @@
 
 	export let data: PageData;
 
+	let isPrivacyRelated = false;
+	$: console.log({ isPrivacyRelated });
+
 	let nonHarmonizedLabels: string[] = [];
 
 	onMount(() => {
@@ -23,14 +26,24 @@
 				{#each nonHarmonizedLabels as label}
 					<div class="label-mapper">
 						<div class="label-wrapper"><kbd>{label}</kbd></div>
-						<Autocomplete formName={label} value="" options={data.allHarmonizedLabels} />
+						<Autocomplete
+							formName={label}
+							value=""
+							options={data.allHarmonizedLabels}
+							required={isPrivacyRelated}
+						/>
 					</div>
 				{/each}
 			</label>
 		{/if}
 
 		<label class="checkboxLabel" for="isPrivacyRelated">
-			<input type="checkbox" id="isPrivacyRelated" name="isPrivacyRelated" checked />
+			<input
+				type="checkbox"
+				id="isPrivacyRelated"
+				name="isPrivacyRelated"
+				bind:checked={isPrivacyRelated}
+			/>
 			Is privacy related
 		</label>
 		<button type="submit">Submit</button>
