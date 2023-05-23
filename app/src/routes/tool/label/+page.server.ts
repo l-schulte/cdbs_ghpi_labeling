@@ -15,47 +15,49 @@ export const load = (async (event) => {
 
 
     const userToken = event.cookies.get('userToken')
-    const user = await checkUserToken(userToken)
-    if (user == null) {
+    const tokenCheck = await checkUserToken(userToken)
+    if (tokenCheck == null) {
         throw Error("Unauthorized")
     }
 
+    const [username, userId] = tokenCheck
+
     const result_issue = await client.query('SELECT * FROM gh_issues WHERE status = $1 AND is_privacy_related = $2 ORDER BY random() LIMIT 1', ['closed', true]).one()
 
-    const labels: string[] = result_issue.get('labels')
     const labelMap: { [key: string]: string } = {}
 
-    if (labels.length) {
-        const q = new Query('SELECT * FROM gh_label_map WHERE original_label IN (' + labels.map((label, index) => `$${index + 1}`).join(', ') + ')',
-            [...labels.map((label: string) => label.toLowerCase())])
-
-        const resultLabelMap = await client.execute(q)
-        for (const row of resultLabelMap) {
-            labelMap[row.get('original_label')] = row.get('harmonized_label')
-        }
+    const resultLabelMap = await client.query('SELECT * FROM gh_label_map')
+    for (const row of resultLabelMap) {
+        labelMap[row.get('original_label')] = row.get('harmonized_label')
     }
 
-    const resultAllLabels = await client.query('SELECT DISTINCT harmonized_label FROM gh_label_map')
-    const allHarmonizedLabels: string[] = []
-    for (const row of resultAllLabels) {
-        allHarmonizedLabels.push(row.get('harmonized_label'))
-    }
+    const resultUserPrivacyIssueOptions = await client.query(`SELECT DISTINCT privacy_issue_rater_${userId + 1} as options FROM gh_issues`)
+    const privacyIssueOptions = [...resultUserPrivacyIssueOptions].map(row => row.get('option'));
+
+    const resultUserConsentInteractionOptions = await client.query(`SELECT DISTINCT consent_interaction_rater_${userId + 1} as options FROM gh_issues`)
+    const consentInteractionOptions = [...resultUserConsentInteractionOptions].map(row => row.get('option'));
+
+    const resultUserResolutionOptions = await client.query(`SELECT DISTINCT resolution_rater_${userId + 1} as options FROM gh_issues`)
+    const resolutionOptions = [...resultUserResolutionOptions].map(row => row.get('option'));
 
     const issue = getIssue(client, result_issue, labelMap)
 
     return {
         issue,
-        user
+        username,
+        privacyIssueOptions,
+        consentInteractionOptions,
+        resolutionOptions
     }
 }) satisfies PageServerLoad
 
-async function checkUserToken(token: string | undefined) {
+async function checkUserToken(token: string | undefined): Promise<[string, number] | null> {
     if (!token) {
         return null
     }
 
     const result = await client.query('SELECT * FROM users WHERE token = $1', [token]).one()
-    return result?.get('name') ?? null
+    return [result?.get('name'), Number.parseInt(result?.get('index'))] ?? null
 }
 
 export const actions = {

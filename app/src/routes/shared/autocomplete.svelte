@@ -19,58 +19,66 @@
 	}
 </script>
 
-<div class="input-wrapper">
-	<input
-		type="text"
-		id="autocomplete_{formName}"
-		name={formName}
-		bind:value
-		on:keydown={handleKeyPress}
-	/>
-	<div class="typeahead">{getMatch(value.length ? value : formName, options)} (TAB)</div>
+<div class="autocomplete-wrapper">
+	<div class="input-wrapper">
+		<input
+			type="text"
+			id="autocomplete_{formName}"
+			name={formName}
+			bind:value
+			on:keydown={handleKeyPress}
+		/>
+		<div class="typeahead">{getMatch(value.length ? value : formName, options)} (TAB)</div>
+	</div>
+	<details class="dropdown" role="list" dir="rtl">
+		<summary aria-haspopup="listbox" role="link" />
+		<ul class="dropdown-popup" role="listbox">
+			{#each options as option}
+				<li>
+					<a
+						on:click={() => {
+							value = option;
+						}}
+					>
+						{option}
+					</a>
+				</li>
+			{/each}
+		</ul>
+	</details>
 </div>
-<details class="dropdown" role="list" dir="rtl">
-	<summary aria-haspopup="listbox" role="link" />
-	<ul class="dropdown-popup" role="listbox">
-		{#each options as option}
-			<li>
-				<a
-					on:click={() => {
-						value = option;
-					}}
-				>
-					{option}
-				</a>
-			</li>
-		{/each}
-	</ul>
-</details>
 
 <style lang="scss">
-	.dropdown {
-		align-self: center;
-		margin: 5px;
-
-		.dropdown-popup {
-			min-width: 300px;
-			max-height: 300px;
-			overflow-y: scroll;
-		}
-	}
-	.input-wrapper {
+	.autocomplete-wrapper {
+		width: 100%;
 		display: flex;
-		align-items: center;
-		position: relative;
-		width: 50%;
+		margin-bottom: 15px;
 
-		input {
-			margin: 0px;
+		.dropdown {
+			align-self: center;
+			margin: 5px;
+
+			.dropdown-popup {
+				min-width: 300px;
+				max-height: 300px;
+				overflow-y: scroll;
+			}
 		}
+		.input-wrapper {
+			display: flex;
+			align-items: center;
+			position: relative;
+			width: 100%;
 
-		.typeahead {
-			position: absolute;
-			right: 15px;
-			color: grey;
+			input {
+				margin: 0px;
+			}
+
+			.typeahead {
+				position: absolute;
+				right: 15px;
+				color: grey;
+			}
 		}
 	}
 </style>

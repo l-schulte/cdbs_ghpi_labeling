@@ -52,6 +52,10 @@
 			align-items: baseline;
 			margin-bottom: 15px;
 
+			.autocomplete {
+				width: 100%;
+			}
+
 			.label-wrapper {
 				height: 100%;
 				width: 50%;

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '@picocss/pico';
-	import type { PageData } from '../$types';
+	import type { PageData } from './$types';
+	import Autocomplete from '../../shared/autocomplete.svelte';
 
 	export let data: PageData;
 </script>
@@ -10,17 +11,21 @@
 	<form method="post">
 		<label for="privacyIssue">
 			Privacy issue
-			<input type="text" id="privacyIssue" name="privacyIssue" required />
+			<Autocomplete formName="privacyIssue" value="" options={data.privacyIssueOptions} />
 		</label>
 
 		<label for="consentInteraction">
 			Consent interaction
-			<input type="text" id="consentInteraction" name="consentInteraction" required />
+			<Autocomplete
+				formName="consentInteraction"
+				value=""
+				options={data.consentInteractionOptions}
+			/>
 		</label>
 
 		<label for="resolution">
 			Resolution
-			<input type="text" id="resolution" name="resolution" required />
+			<Autocomplete formName="resolution" value="" options={data.resolutionOptions} />
 		</label>
 		<button type="submit">Submit</button>
 	</form>

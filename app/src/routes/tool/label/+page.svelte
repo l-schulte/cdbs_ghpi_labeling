@@ -36,7 +36,7 @@
 <nav>
 	<ul>
 		<li><strong>Privacy issues on GitHub</strong></li>
-		<li>{data.user}</li>
+		<li>{data.username}</li>
 	</ul>
 	<ul>
 		<li><a href="/help">Help</a></li>
