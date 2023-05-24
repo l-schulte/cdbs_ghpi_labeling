@@ -48,7 +48,9 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data.issue.participants as participant}
+				{#each data.issue.participants
+					.sort((a, b) => b.login.localeCompare(a.login))
+					.sort((a, b) => (a.reporter ? 0 : 1)) as participant}
 					<tr>
 						<td>{participant.reporter ? '✅' : '❌'}</td>
 						<td>{participant.login}</td>

@@ -22,7 +22,10 @@ export const load = (async (event) => {
 
     const [username, userId] = tokenCheck
 
-    const result_issue = await client.query('SELECT * FROM gh_issues WHERE status = $1 AND is_privacy_related = $2 ORDER BY random() LIMIT 1', ['closed', true]).one()
+    const result_issue = await client.query(
+        `SELECT * FROM gh_issues WHERE status = $1 AND is_privacy_related = $2 AND privacy_issue_rater_${userId + 1} IS NULL ORDER BY random() LIMIT 1`,
+        ['closed', true]
+    ).one()
 
     const labelMap: { [key: string]: string } = {}
 
