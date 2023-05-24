@@ -13,6 +13,10 @@
 			.filter((label: string) => data.issue.labelMap[label])
 			.map((label: string) => data.issue.labelMap[label]);
 	});
+
+	function getNumberRep(num: number) {
+		return num <= 1 ? num : 'multiple';
+	}
 </script>
 
 <!-- BODY -->
@@ -52,10 +56,10 @@
 					.sort((a, b) => b.login.localeCompare(a.login))
 					.sort((a, b) => (a.reporter ? 0 : 1)) as participant}
 					<tr>
-						<td>{participant.reporter ? '✅' : '❌'}</td>
+						<td>{participant.reporter ? '✅' : ''}</td>
 						<td>{participant.login}</td>
-						<td>{participant.commits}</td>
-						<td>{participant.reports}</td>
+						<td>{getNumberRep(participant.commits)}</td>
+						<td>{getNumberRep(participant.reports)}</td>
 					</tr>
 				{/each}
 			</tbody>
