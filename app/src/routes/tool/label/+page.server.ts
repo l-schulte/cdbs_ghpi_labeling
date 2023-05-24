@@ -1,5 +1,5 @@
 import { fail } from "@sveltejs/kit";
-import { Client, Query } from 'ts-postgres';
+import { Client } from 'ts-postgres';
 import type { Actions, PageServerLoad } from "./$types";
 import { getIssue } from "../../shared/issue";
 import { dbConfig } from "../variables";
@@ -35,13 +35,14 @@ export const load = (async (event) => {
     }
 
     const resultUserPrivacyIssueOptions = await client.query(`SELECT DISTINCT privacy_issue_rater_${userId + 1} as options FROM gh_issues`)
-    const privacyIssueOptions = [...resultUserPrivacyIssueOptions].map(row => row.get('option'));
+    const privacyIssueOptions = [...resultUserPrivacyIssueOptions].map(row => row.get('options')).filter(option => option).sort((a: string, b: string) => a.localeCompare(b));
 
     const resultUserConsentInteractionOptions = await client.query(`SELECT DISTINCT consent_interaction_rater_${userId + 1} as options FROM gh_issues`)
-    const consentInteractionOptions = [...resultUserConsentInteractionOptions].map(row => row.get('option'));
+    const consentInteractionOptions = [...resultUserConsentInteractionOptions].map(row => row.get('options')).filter(option => option).sort((a: string, b: string) => a.localeCompare(b));
 
     const resultUserResolutionOptions = await client.query(`SELECT DISTINCT resolution_rater_${userId + 1} as options FROM gh_issues`)
-    const resolutionOptions = [...resultUserResolutionOptions].map(row => row.get('option'));
+
+    const resolutionOptions = [...resultUserResolutionOptions].map(row => row.get('options')).filter((option: string) => option).sort((a: string, b: string) => a.localeCompare(b));
 
     const issue = getIssue(client, result_issue, labelMap)
 
@@ -71,7 +72,7 @@ export const actions = {
             return fail(403, { userToken, incorrect: true })
         }
 
-        const [username, userId] = tokenCheck
+        const [, userId] = tokenCheck
 
         const data = await event.request.formData()
         console.log('label', data);
@@ -87,7 +88,7 @@ export const actions = {
         } else {
             await client.query(
                 `UPDATE gh_issues SET privacy_issue_rater_${userId + 1} = $1, consent_interaction_rater_${userId + 1} = $2, resolution_rater_${userId + 1} = $3 WHERE index = $4`,
-                [index, [data.get('privacyIssue'), data.get('consentInteraction'), data.get('resolution')].map(value => value?.toString().toLowerCase())]
+                [...[data.get('privacyIssue'), data.get('consentInteraction'), data.get('resolution')].map(value => value?.toString().toLowerCase()), index]
             )
         }
     }

@@ -34,10 +34,7 @@ export const load = (async (event) => {
     }
 
     const resultAllLabels = await client.query('SELECT DISTINCT harmonized_label FROM gh_label_map')
-    const allHarmonizedLabels: string[] = []
-    for (const row of resultAllLabels) {
-        allHarmonizedLabels.push(row.get('harmonized_label'))
-    }
+    const allHarmonizedLabels: string[] = [...resultAllLabels].map(row => row.get('harmonized_label')).sort((a: string, b: string) => a.localeCompare(b));
 
     const issue = getIssue(client, result_issue, labelMap)
 
