@@ -17,7 +17,7 @@
 </script>
 
 <article>
-	<header>Manual harmonization</header>
+	<header>Manual validation / sampling</header>
 	<form method="post">
 		<input type="hidden" id="index" name="index" value={data.issue.index} />
 		{#if nonHarmonizedLabels.length}
