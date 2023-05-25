@@ -25,7 +25,6 @@
 			bind:value={userToken}
 			required
 		/>
-		<small>We'll never share your email with anyone else.</small>
 
 		<!-- Button -->
 		<button type="button" on:click={storeUserToken}>Go</button>
