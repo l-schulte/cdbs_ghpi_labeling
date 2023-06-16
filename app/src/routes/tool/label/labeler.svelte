@@ -17,7 +17,7 @@
 			Privacy issue
 			<Autocomplete
 				formName="privacyIssue"
-				value=""
+				value={data.issue.codes.privacy_issue ?? ''}
 				options={data.privacyIssueOptions}
 				required={isPrivacyRelated}
 			/>
@@ -27,7 +27,7 @@
 			Consent interaction
 			<Autocomplete
 				formName="consentInteraction"
-				value=""
+				value={data.issue.codes.consent_interaction ?? ''}
 				options={data.consentInteractionOptions}
 				required={isPrivacyRelated}
 			/>
@@ -37,7 +37,7 @@
 			Resolution
 			<Autocomplete
 				formName="resolution"
-				value=""
+				value={data.issue.codes.resolution ?? ''}
 				options={data.resolutionOptions}
 				required={isPrivacyRelated}
 			/>

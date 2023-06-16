@@ -5,9 +5,12 @@
 	import Cookies from 'js-cookie';
 	import IssueOverview from '../../shared/issueOverview.svelte';
 	import Labeler from './labeler.svelte';
+	import { page } from '$app/stores';
 
 	export let data: PageData;
 	let userToken = Cookies.get('userToken');
+
+	const includeCodedBefore = $page.url.searchParams.get('include-coded-before');
 
 	onMount(() => {
 		if (!userToken) {
@@ -27,7 +30,8 @@
 			'github',
 			'popup=true,resize=true,width=600,height=400,left=200,top=200'
 		);
-		window.location.href = '/tool/label';
+		window.location.href =
+			'/tool/label' + includeCodedBefore ? '?include-coded-before=' + includeCodedBefore : '';
 	}
 </script>
 

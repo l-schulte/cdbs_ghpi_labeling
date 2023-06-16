@@ -9,12 +9,10 @@ await client.connect();
 
 
 
-export const load = (async (event) => {
+export const load = (async ({ cookies, url }) => {
 
-    console.log("GET", event.cookies.getAll(), event.route);
-
-
-    const userToken = event.cookies.get('userToken')
+    const userToken = cookies.get('userToken')
+    const includeCodedBefore = url.searchParams.get('include-coded-before')
     const tokenCheck = await checkUserToken(userToken)
     if (tokenCheck == null) {
         throw Error("Unauthorized")
@@ -23,7 +21,7 @@ export const load = (async (event) => {
     const [username, userId] = tokenCheck
 
     const result_issue = await client.query(
-        `SELECT * FROM gh_issues WHERE status = $1 AND is_privacy_related = $2 AND privacy_issue_rater_${userId + 1} IS NULL ORDER BY random() LIMIT 1`,
+        `SELECT * FROM gh_issues WHERE status = $1 AND is_privacy_related = $2 AND (privacy_issue_rater_${userId + 1} IS NULL OR last_edit_rater_${userId + 1} ::date <= date '${includeCodedBefore}') ORDER BY random() LIMIT 1`,
         ['closed', true]
     ).one()
 
@@ -44,7 +42,7 @@ export const load = (async (event) => {
 
     const resolutionOptions = [...resultUserResolutionOptions].map(row => row.get('options')).filter((option: string) => option).sort((a: string, b: string) => a.localeCompare(b));
 
-    const issue = getIssue(client, result_issue, labelMap)
+    const issue = getIssue(client, result_issue, labelMap, userId)
 
     return {
         issue,
