@@ -87,7 +87,7 @@ export const actions = {
             await client.query('UPDATE gh_issues SET is_privacy_related = $1 WHERE index = $2', [false, index])
         } else {
             await client.query(
-                `UPDATE gh_issues SET privacy_issue_rater_${userId + 1} = $1, consent_interaction_rater_${userId + 1} = $2, resolution_rater_${userId + 1} = $3 WHERE index = $4`,
+                `UPDATE gh_issues SET privacy_issue_rater_${userId + 1} = $1, consent_interaction_rater_${userId + 1} = $2, resolution_rater_${userId + 1} = $3, last_edit_rater_${userId + 1} = now() WHERE index = $4`,
                 [...[data.get('privacyIssue'), data.get('consentInteraction'), data.get('resolution')].map(value => value?.toString().toLowerCase()), index]
             )
         }

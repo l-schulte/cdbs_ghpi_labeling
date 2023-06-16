@@ -37,6 +37,7 @@ def create_rater_tables(rater: str):
     issues_df[f"privacy_issue_{rater}"] = None
     issues_df[f"consent_interaction_{rater}"] = None
     issues_df[f"resolution_{rater}"] = None
+    issues_df[f"last_edit_{rater}"] = pd.Timestamp("2023-01-01")
 
 
 create_rater_tables("rater_1")
