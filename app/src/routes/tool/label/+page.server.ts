@@ -12,7 +12,7 @@ await client.connect();
 export const load = (async ({ cookies, url }) => {
 
     const userToken = cookies.get('userToken')
-    const includeCodedBefore = url.searchParams.get('include-coded-before')
+    const includeCodedBefore = url.searchParams.get('include-coded-before') ?? '1900-01-01'
     const tokenCheck = await checkUserToken(userToken)
     if (tokenCheck == null) {
         throw Error("Unauthorized")
