@@ -10,7 +10,8 @@
 	export let data: PageData;
 	let userToken = Cookies.get('userToken');
 
-	const includeCodedBefore = $page.url.searchParams.get('include-coded-before');
+	const recodeStart = $page.url.searchParams.get('recode-start');
+	const recodeEnd = $page.url.searchParams.get('recode-end');
 
 	onMount(() => {
 		if (!userToken) {
@@ -31,7 +32,9 @@
 			'popup=true,resize=true,width=600,height=400,left=200,top=200'
 		);
 		window.location.href =
-			'/tool/label' + includeCodedBefore ? '?include-coded-before=' + includeCodedBefore : '';
+			'/tool/label' + !!recodeStart && !!recodeEnd
+				? `?recode-start=${recodeStart}&recode-end=${recodeEnd}`
+				: '';
 	}
 </script>
 

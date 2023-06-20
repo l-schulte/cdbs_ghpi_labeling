@@ -12,7 +12,8 @@ await client.connect();
 export const load = (async ({ cookies, url }) => {
 
     const userToken = cookies.get('userToken')
-    const includeCodedBefore = url.searchParams.get('include-coded-before') ?? '1900-01-01'
+    const reCodeStart = url.searchParams.get('recode-start')
+    const reCodeEnd = url.searchParams.get('recode-end')
     const tokenCheck = await checkUserToken(userToken)
     if (tokenCheck == null) {
         throw Error("Unauthorized")
@@ -20,8 +21,19 @@ export const load = (async ({ cookies, url }) => {
 
     const [username, userId] = tokenCheck
 
+    const query = `SELECT * FROM gh_issues WHERE status = $1 AND is_privacy_related = $2`
+        + (!!reCodeStart && !!reCodeEnd
+            ? ` AND (last_edit_rater_${userId + 1} ::timestamp > timestamp '${reCodeStart}' AND last_edit_rater_${userId + 1} ::timestamp <= timestamp '${reCodeEnd}')`
+            : ` AND privacy_issue_rater_${userId + 1} IS NULL`)
+        + ` ORDER BY random() LIMIT 1`
+
+    console.log(reCodeStart, reCodeEnd);
+    console.log(query);
+
+
+
     const result_issue = await client.query(
-        `SELECT * FROM gh_issues WHERE status = $1 AND is_privacy_related = $2 AND (privacy_issue_rater_${userId + 1} IS NULL OR last_edit_rater_${userId + 1} ::date <= date '${includeCodedBefore}') ORDER BY random() LIMIT 1`,
+        query,
         ['closed', true]
     ).one()
 
