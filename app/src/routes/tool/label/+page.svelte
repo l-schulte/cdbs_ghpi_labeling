@@ -12,6 +12,7 @@
 
 	const recodeStart = $page.url.searchParams.get('recode-start');
 	const recodeEnd = $page.url.searchParams.get('recode-end');
+	const recodePage = Number($page.url.searchParams.get('recode-page') ?? 0);
 
 	onMount(() => {
 		if (!userToken) {
@@ -33,7 +34,7 @@
 		);
 		window.location.href =
 			'/tool/label' + !!recodeStart && !!recodeEnd
-				? `?recode-start=${recodeStart}&recode-end=${recodeEnd}`
+				? `?recode-start=${recodeStart}&recode-end=${recodeEnd}&recode-page=${recodePage + 1}`
 				: '';
 	}
 </script>

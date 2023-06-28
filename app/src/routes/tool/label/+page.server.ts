@@ -14,6 +14,7 @@ export const load = (async ({ cookies, url }) => {
     const userToken = cookies.get('userToken')
     const reCodeStart = url.searchParams.get('recode-start')
     const reCodeEnd = url.searchParams.get('recode-end')
+    const reCodePage = Number(url.searchParams.get('recode-page') ?? 0)
     const tokenCheck = await checkUserToken(userToken)
     if (tokenCheck == null) {
         throw Error("Unauthorized")
@@ -24,8 +25,8 @@ export const load = (async ({ cookies, url }) => {
     const query = `SELECT * FROM gh_issues WHERE status = $1 AND is_privacy_related = $2`
         + (!!reCodeStart && !!reCodeEnd
             ? ` AND (last_edit_rater_${userId + 1} ::timestamp > timestamp '${reCodeStart}' AND last_edit_rater_${userId + 1} ::timestamp <= timestamp '${reCodeEnd}')`
-            : ` AND privacy_issue_rater_${userId + 1} IS NULL`)
-        + ` ORDER BY random() LIMIT 1`
+            + ` ORDER BY last_edit_rater_${userId + 1} DESC offset ${reCodePage}`
+            : ` AND privacy_issue_rater_${userId + 1} IS NULL ORDER BY random() LIMIT 1`)
 
     console.log(reCodeStart, reCodeEnd);
     console.log(query);
