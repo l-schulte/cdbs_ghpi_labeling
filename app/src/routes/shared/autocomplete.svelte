@@ -28,9 +28,13 @@
 			name={formName}
 			bind:value
 			on:keydown={handleKeyPress}
+			autocomplete="off"
 			{required}
 		/>
-		<div class="typeahead">{getMatch(value.length ? value : formName, options)} (TAB)</div>
+		<div class="typeahead">
+			<div class="prediction">{getMatch(value.length ? value : formName, options)}</div>
+			<div>&nbsp;(TAB)</div>
+		</div>
 	</div>
 	<details class="dropdown" role="list" dir="rtl">
 		<summary aria-haspopup="listbox" role="link" />
@@ -77,9 +81,17 @@
 			}
 
 			.typeahead {
+				.prediction {
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					overflow: hidden;
+				}
+
 				position: absolute;
 				right: 15px;
 				color: grey;
+				max-width: 30%;
+				display: flex;
 			}
 		}
 	}
