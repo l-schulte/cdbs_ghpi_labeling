@@ -99,5 +99,9 @@
 		justify-content: center;
 		align-items: center;
 		margin-bottom: 25px;
+
+		label {
+			margin: 3px;
+		}
 	}
 </style>
