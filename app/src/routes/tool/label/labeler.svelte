@@ -53,15 +53,17 @@
 			/>
 		</label>
 
-		<label class="checkboxLabel" for="isPrivacyRelated">
-			<input
-				type="checkbox"
-				id="isPrivacyRelated"
-				name="isPrivacyRelated"
-				bind:checked={isPrivacyRelated}
-			/>
+		<div class="checkboxLabel">
+			<label for="isPrivacyRelated">
+				<input
+					type="checkbox"
+					id="isPrivacyRelated"
+					name="isPrivacyRelated"
+					bind:checked={isPrivacyRelated}
+				/>
+			</label>
 			Is privacy related (only change if wrongly classified)
-		</label>
+		</div>
 		<button type="submit">Submit</button>
 	</form>
 </article>
@@ -95,7 +97,7 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
-		align-items: flex-end;
+		align-items: center;
 		margin-bottom: 25px;
 	}
 </style>
