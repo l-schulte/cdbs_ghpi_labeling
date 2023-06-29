@@ -90,7 +90,7 @@ export const actions = {
         data.delete('isPrivacyRelated')
 
         if (!isPrivacyRelated) {
-            await client.query('UPDATE gh_issues SET is_privacy_related = $1 WHERE index = $2', [false, index])
+            await client.query('UPDATE gh_issues SET is_privacy_related = $1, notes = $2 WHERE index = $3', [false, data.get('notes'), index])
         } else {
             await client.query(
                 `UPDATE gh_issues SET privacy_issue_rater_${userId + 1} = $1, consent_interaction_rater_${userId + 1} = $2, resolution_rater_${userId + 1} = $3, notes = $4, last_edit_rater_${userId + 1} = now() WHERE index = $5`,
