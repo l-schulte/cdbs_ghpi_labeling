@@ -28,11 +28,6 @@ export const load = (async ({ cookies, url }) => {
             + ` ORDER BY last_edit_rater_${userId + 1} DESC offset ${reCodePage}`
             : ` AND privacy_issue_rater_${userId + 1} IS NULL ORDER BY random() LIMIT 1`)
 
-    console.log(reCodeStart, reCodeEnd);
-    console.log(query);
-
-
-
     const result_issue = await client.query(
         query,
         ['closed', true]
@@ -98,8 +93,8 @@ export const actions = {
             await client.query('UPDATE gh_issues SET is_privacy_related = $1 WHERE index = $2', [false, index])
         } else {
             await client.query(
-                `UPDATE gh_issues SET privacy_issue_rater_${userId + 1} = $1, consent_interaction_rater_${userId + 1} = $2, resolution_rater_${userId + 1} = $3, last_edit_rater_${userId + 1} = now() WHERE index = $4`,
-                [...[data.get('privacyIssue'), data.get('consentInteraction'), data.get('resolution')].map(value => value?.toString().toLowerCase()), index]
+                `UPDATE gh_issues SET privacy_issue_rater_${userId + 1} = $1, consent_interaction_rater_${userId + 1} = $2, resolution_rater_${userId + 1} = $3, notes = $4, last_edit_rater_${userId + 1} = now() WHERE index = $5`,
+                [...[data.get('privacyIssue'), data.get('consentInteraction'), data.get('resolution')].map(value => value?.toString().toLowerCase()), data.get('notes'), index]
             )
         }
     }

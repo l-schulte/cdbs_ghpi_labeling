@@ -43,6 +43,16 @@
 			/>
 		</label>
 
+		<label for="notes">
+			Notes
+			<textarea
+				id="notes"
+				name="notes"
+				value={data.issue.notes ?? ''}
+				placeholder="Create a public note here..."
+			/>
+		</label>
+
 		<label class="checkboxLabel" for="isPrivacyRelated">
 			<input
 				type="checkbox"
