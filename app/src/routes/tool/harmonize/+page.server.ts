@@ -61,7 +61,7 @@ export const actions = {
         const isPrivacyRelated = data.has('isPrivacyRelated')
         data.delete('isPrivacyRelated')
 
-        await client.query('UPDATE gh_issues SET is_privacy_related = $1 WHERE index = $2', [isPrivacyRelated, index])
+        await client.query('UPDATE gh_issues SET is_privacy_related = $1, notes = $2 WHERE index = $3', [isPrivacyRelated, data.get('notes'), index])
 
         for (const [originalLabel, harmonizedLabel] of data.entries()) {
             if (harmonizedLabel.toString().length) {
