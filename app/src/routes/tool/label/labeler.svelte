@@ -13,6 +13,15 @@
 	<form method="post">
 		<input type="hidden" id="index" name="index" value={data.issue.index} />
 
+		<label for="trigger">
+			Trigger
+			<Autocomplete
+				formName="trigger"
+				value={data.issue.codes.trigger ?? ''}
+				options={data.triggerOptions}
+			/>
+		</label>
+
 		<label for="privacyIssue">
 			Privacy issue
 			<Autocomplete

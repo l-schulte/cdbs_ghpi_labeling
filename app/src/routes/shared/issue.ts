@@ -37,6 +37,7 @@ export async function getIssue(client: Client, result_issue: ResultRow, labelMap
             isPrivacyRelated: result_issue.get('is_privacy_related'),
             notes: result_issue.get('notes')
         }, codes: userId !== null ? {
+            trigger: result_issue.get('trigger_rater_' + (userId + 1)),
             privacy_issue: result_issue.get('privacy_issue_rater_' + (userId + 1)),
             consent_interaction: result_issue.get('consent_interaction_rater_' + (userId + 1)),
             resolution: result_issue.get('resolution_rater_' + (userId + 1))

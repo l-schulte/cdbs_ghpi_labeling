@@ -34,6 +34,7 @@ issues_df["is_privacy_related"] = None
 
 # Add columns for raters
 def create_rater_tables(rater: str):
+    issues_df[f"trigger_{rater}"] = None
     issues_df[f"privacy_issue_{rater}"] = None
     issues_df[f"consent_interaction_{rater}"] = None
     issues_df[f"resolution_{rater}"] = None
