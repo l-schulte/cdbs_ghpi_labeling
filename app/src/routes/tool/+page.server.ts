@@ -27,7 +27,7 @@ export const load = (async (event) => {
 		const index = Number.parseInt(row.get('index')) + 1;
 		const query = new Query(
 			`SELECT COUNT(*) FROM gh_issues ` +
-				`WHERE is_privacy_related = false AND consent_interaction_rater_${index} IS NOT NULL ` +
+				`WHERE is_privacy_related = true AND consent_interaction_rater_${index} IS NOT NULL ` +
 				`AND resolution_rater_${index} IS NOT NULL AND privacy_issue_rater_${index} IS NOT NULL`
 		);
 
