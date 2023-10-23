@@ -65,7 +65,7 @@
 			margin: 5px;
 
 			.dropdown-popup {
-				min-width: 300px;
+				min-width: 500px;
 				max-height: 300px;
 				overflow-y: scroll;
 			}
