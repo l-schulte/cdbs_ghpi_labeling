@@ -22,12 +22,10 @@ export const load = (async ({ cookies, url }) => {
 	const query =
 		`SELECT * FROM gh_issues WHERE status = $1 AND is_privacy_related = $2` +
 		(!!reCodeStart && !!reCodeEnd
-			? ` AND (last_edit_rater_${
-					userId + 1
-			  } ::timestamp > timestamp '${reCodeStart}' AND last_edit_rater_${
-					userId + 1
-			  } ::timestamp <= timestamp '${reCodeEnd}')` +
-			  ` ORDER BY last_edit_rater_${userId + 1} DESC offset ${reCodePage}`
+			? ` AND (last_edit_rater_${userId + 1
+			} ::timestamp > timestamp '${reCodeStart}' AND last_edit_rater_${userId + 1
+			} ::timestamp <= timestamp '${reCodeEnd}')` +
+			` ORDER BY last_edit_rater_${userId + 1} DESC offset ${reCodePage}`
 			: ` AND privacy_issue_rater_${userId + 1} IS NULL ORDER BY random() LIMIT 1`);
 
 	const result_issue = await client.query(query, ['closed', true]).one();
@@ -109,22 +107,26 @@ export const actions = {
 		const index = data.get('index');
 		data.delete('index');
 
+		const templateMentionsPrivacy = data.has('templateMentionsPrivacy')
+		data.delete('templateMentionsPrivacy')
+
 		const isPrivacyRelated = data.has('isPrivacyRelated');
 		data.delete('isPrivacyRelated');
 
 		if (!isPrivacyRelated) {
 			await client.query(
-				'UPDATE gh_issues SET is_privacy_related = $1, notes = $2 WHERE index = $3',
-				[false, data.get('notes'), index]
+				'UPDATE gh_issues SET is_privacy_related = $1, notes = $2, template_mentions_privacy= $3 WHERE index = $4',
+				[false, data.get('notes'), templateMentionsPrivacy, index]
 			);
 		} else {
 			await client.query(
 				`UPDATE gh_issues SET trigger_rater_${userId + 1} = $1, ` +
-					`privacy_issue_rater_${userId + 1} = $2, ` +
-					`consent_interaction_rater_${userId + 1} = $3, ` +
-					`resolution_rater_${userId + 1} = $4, ` +
-					`notes = $5, last_edit_rater_${userId + 1} = now() ` +
-					`WHERE index = $6`,
+				`privacy_issue_rater_${userId + 1} = $2, ` +
+				`consent_interaction_rater_${userId + 1} = $3, ` +
+				`resolution_rater_${userId + 1} = $4, ` +
+				`notes = $5, last_edit_rater_${userId + 1} = now(), ` +
+				`template_mentions_privacy = $6 ` +
+				`WHERE index = $7`,
 				[
 					...[
 						data.get('trigger'),
@@ -133,6 +135,7 @@ export const actions = {
 						data.get('resolution')
 					].map((value) => value?.toString().toLowerCase()),
 					data.get('notes'),
+					templateMentionsPrivacy,
 					index
 				]
 			);

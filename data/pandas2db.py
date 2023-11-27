@@ -31,6 +31,9 @@ issues_df["harmonized_labels"] = None
 # Add empty column for is privacy check
 issues_df["is_privacy_related"] = None
 
+# Add empty column for template mentioning privacy
+issues_df["template_mentions_privacy"] = None
+
 
 # Add columns for raters
 def create_rater_tables(rater: str):

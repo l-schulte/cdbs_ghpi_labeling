@@ -61,7 +61,10 @@ export const actions = {
         const isPrivacyRelated = data.has('isPrivacyRelated')
         data.delete('isPrivacyRelated')
 
-        await client.query('UPDATE gh_issues SET is_privacy_related = $1, notes = $2 WHERE index = $3', [isPrivacyRelated, data.get('notes'), index])
+        const templateMentionsPrivacy = data.has('templateMentionsPrivacy')
+        data.delete('templateMentionsPrivacy')
+
+        await client.query('UPDATE gh_issues SET is_privacy_related = $1, template_mentions_privacy = $2, notes = $3 WHERE index = $4', [isPrivacyRelated, templateMentionsPrivacy, data.get('notes'), index])
 
         for (const [originalLabel, harmonizedLabel] of data.entries()) {
             if (harmonizedLabel.toString().length) {

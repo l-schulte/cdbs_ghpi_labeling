@@ -70,6 +70,10 @@
 			<p>#Comments: <kbd>{data.issue.comments}</kbd></p>
 			<p>#Discussants: <kbd>{data.issue.discussants}</kbd></p>
 		</div>
+
+		<div class="category split">
+			<p>Template mentions privacy: <kbd>{data.issue.templateMentionsPrivacy}</kbd></p>
+		</div>
 	</details>
 </article>
 

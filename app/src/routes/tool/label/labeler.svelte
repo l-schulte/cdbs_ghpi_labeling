@@ -6,6 +6,7 @@
 	export let data: PageData;
 
 	let isPrivacyRelated = data.issue.isPrivacyRelated;
+	let templateMentionsPrivacy = data.issue.templateMentionsPrivacy;
 </script>
 
 <article>
@@ -61,6 +62,18 @@
 				placeholder="Create a public note here..."
 			/>
 		</label>
+
+		<div class="checkboxLabel">
+			<label class="checkboxLabel" for="templateMentionsPrivacy">
+				<input
+					type="checkbox"
+					id="templateMentionsPrivacy"
+					name="templateMentionsPrivacy"
+					bind:checked={templateMentionsPrivacy}
+				/>
+				Template mentions privacy
+			</label>
+		</div>
 
 		<div class="checkboxLabel">
 			<label for="isPrivacyRelated">

@@ -9,6 +9,8 @@
 	let isPrivacyRelated = false;
 	$: console.log({ isPrivacyRelated });
 
+	let templateMentionsPrivacy = false;
+
 	let nonHarmonizedLabels: string[] = [];
 
 	onMount(() => {
@@ -45,6 +47,16 @@
 				value={data.issue.notes ?? ''}
 				placeholder="Create a public note here..."
 			/>
+		</label>
+
+		<label class="checkboxLabel" for="templateMentionsPrivacy">
+			<input
+				type="checkbox"
+				id="templateMentionsPrivacy"
+				name="templateMentionsPrivacy"
+				bind:checked={templateMentionsPrivacy}
+			/>
+			Template mentions privacy
 		</label>
 
 		<label class="checkboxLabel" for="isPrivacyRelated">

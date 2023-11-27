@@ -35,6 +35,7 @@ export async function getIssue(client: Client, result_issue: ResultRow, labelMap
             discussants: result_issue.get('#discussants'),
             labelMap: labelMap,
             isPrivacyRelated: result_issue.get('is_privacy_related'),
+            templateMentionsPrivacy: result_issue.get('template_mentions_privacy'),
             notes: result_issue.get('notes')
         }, codes: userId !== null ? {
             trigger: result_issue.get('trigger_rater_' + (userId + 1)),
