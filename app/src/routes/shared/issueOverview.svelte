@@ -73,6 +73,13 @@
 
 		<div class="category split">
 			<p>Template mentions privacy: <kbd>{data.issue.templateMentionsPrivacy}</kbd></p>
+
+			<p>
+				Keywords found:
+				{#each data.issue.keywords as keyword}
+					<kbd>{keyword}</kbd>
+				{/each}
+			</p>
 		</div>
 	</details>
 </article>

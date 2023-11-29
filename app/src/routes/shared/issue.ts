@@ -21,6 +21,7 @@ export async function getIssue(client: Client, result_issue: ResultRow, labelMap
         })
     }
 
+
     return {
         ...{
             index: result_issue.get('index'),
@@ -36,7 +37,8 @@ export async function getIssue(client: Client, result_issue: ResultRow, labelMap
             labelMap: labelMap,
             isPrivacyRelated: result_issue.get('is_privacy_related'),
             templateMentionsPrivacy: result_issue.get('template_mentions_privacy'),
-            notes: result_issue.get('notes')
+            notes: result_issue.get('notes'),
+            keywords: JSON.parse(`{ "keywords": ${result_issue.get("keywords")} }`.replaceAll("'", '"'))['keywords'] as string[]
         }, codes: userId !== null ? {
             trigger: result_issue.get('trigger_rater_' + (userId + 1)),
             privacy_issue: result_issue.get('privacy_issue_rater_' + (userId + 1)),
