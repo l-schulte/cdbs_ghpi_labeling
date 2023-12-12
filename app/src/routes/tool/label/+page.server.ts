@@ -70,6 +70,15 @@ export const load = (async ({ cookies, url }) => {
 		.filter((option: string) => option)
 		.sort((a: string, b: string) => a.localeCompare(b));
 
+	const resultUserReasonOptions = await client.query(
+		`SELECT DISTINCT reason_rater_${userId + 1} as options FROM gh_issues`
+	);
+
+	const reasonOptions = [...resultUserReasonOptions]
+		.map((row) => row.get('options'))
+		.filter((option: string) => option)
+		.sort((a: string, b: string) => a.localeCompare(b));
+
 	const issue = getIssue(client, result_issue, labelMap, userId);
 
 	return {
@@ -78,7 +87,8 @@ export const load = (async ({ cookies, url }) => {
 		triggerOptions,
 		privacyIssueOptions,
 		consentInteractionOptions,
-		resolutionOptions
+		resolutionOptions,
+		reasonOptions,
 	};
 }) satisfies PageServerLoad;
 
@@ -124,15 +134,17 @@ export const actions = {
 				`privacy_issue_rater_${userId + 1} = $2, ` +
 				`consent_interaction_rater_${userId + 1} = $3, ` +
 				`resolution_rater_${userId + 1} = $4, ` +
-				`notes = $5, last_edit_rater_${userId + 1} = now(), ` +
-				`template_mentions_privacy = $6 ` +
-				`WHERE index = $7`,
+				`reason_rater_${userId + 1} = $5, ` +
+				`notes = $6, last_edit_rater_${userId + 1} = now(), ` +
+				`template_mentions_privacy = $7 ` +
+				`WHERE index = $8`,
 				[
 					...[
 						data.get('trigger'),
 						data.get('privacyIssue'),
 						data.get('consentInteraction'),
-						data.get('resolution')
+						data.get('resolution'),
+						data.get('reason')
 					].map((value) => value?.toString().toLowerCase()),
 					data.get('notes'),
 					templateMentionsPrivacy,

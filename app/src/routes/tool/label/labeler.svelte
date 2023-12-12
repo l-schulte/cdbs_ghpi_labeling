@@ -53,6 +53,16 @@
 			/>
 		</label>
 
+		<label for="reason">
+			Reason
+			<Autocomplete
+				formName="reason"
+				value={data.issue.codes.reason ?? ''}
+				options={data.reasonOptions}
+				required={isPrivacyRelated}
+			/>
+		</label>
+
 		<label for="notes">
 			Notes
 			<textarea

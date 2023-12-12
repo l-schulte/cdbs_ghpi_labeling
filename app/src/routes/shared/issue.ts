@@ -11,7 +11,6 @@ export async function getIssue(client: Client, result_issue: ResultRow, labelMap
     const participants = []
     for (const row of resultParticipants) {
         const login = row.get('login')
-        console.log(login);
 
         participants.push({
             reporter: login == reporter_login,
@@ -43,7 +42,8 @@ export async function getIssue(client: Client, result_issue: ResultRow, labelMap
             trigger: result_issue.get('trigger_rater_' + (userId + 1)),
             privacy_issue: result_issue.get('privacy_issue_rater_' + (userId + 1)),
             consent_interaction: result_issue.get('consent_interaction_rater_' + (userId + 1)),
-            resolution: result_issue.get('resolution_rater_' + (userId + 1))
+            resolution: result_issue.get('resolution_rater_' + (userId + 1)),
+            reason: result_issue.get('reason_rater_' + (userId + 1))
         } : {}
     }
 }
